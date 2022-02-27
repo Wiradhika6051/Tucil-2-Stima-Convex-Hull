@@ -1,5 +1,5 @@
-import util as ut
 import numpy as np
+import util as ut
 class MyConvexHull:
     color_idx = 0
     colors = ['b','r','g','c','m','y','k','#7b3f00']##7b3f00->chocolate

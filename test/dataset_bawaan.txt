@@ -1,0 +1,5 @@
+dari sklearn:
+1.iris
+2.digits
+3.wine
+4.breast cancer

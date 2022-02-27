@@ -22,7 +22,6 @@ if __name__ == '__main__':
     import pandas as pd
     import matplotlib.pyplot as plt
     import myConvexHull as my
-    from sklearn import datasets
     valid = False
     data = None
     print("Pilih sumber dari data yang ingin Anda masukkan(dalam angka): ")
@@ -30,6 +29,7 @@ if __name__ == '__main__':
     print("2.CSV")
     sumber_data = int(input("Masukkan pilihan Anda: "))
     if(sumber_data==1):
+        from sklearn import datasets
         while(not valid):
             print("Pilih dataset yang diinginkan: ")
             print("1.iris")
