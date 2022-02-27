@@ -1,12 +1,13 @@
-from cmath import sqrt
-from operator import le
-from tracemalloc import start
-from turtle import circle, st
+import util as ut
 import numpy as np
 class MyComplexHull:
+    color_idx = 0
+    colors = ['b','r','g','c','m','y','k','#7b3f00']##7b3f00->chocolate
     def __init__(self,coordinates):
         self.coordinates = coordinates
         self.simplices = self.getConvexHull(coordinates)
+        self.color = MyComplexHull.colors[(MyComplexHull.color_idx)%len(MyComplexHull.colors)]
+        MyComplexHull.color_idx += 1
 
     def sort(self,coordinates,axis=0):#0:x,1:y
         #pake quicksort
@@ -77,7 +78,7 @@ class MyComplexHull:
         left = []
         right = []
         for i in range(1,len(sorted_coordinates)-1):
-            check_position = self.checkPosition(start,end,sorted_coordinates[i])
+            check_position = ut.checkPosition(start,end,sorted_coordinates[i])
             if(check_position>0):
                 #kalo positif berarti di kiri
                 left.append(sorted_coordinates[i])
@@ -111,13 +112,13 @@ class MyComplexHull:
             right = []
             #cari titik terjauh
             if(len(coordinates)>1 and not(start[0]==end[0] and start[1]!=end[1])):
-                farthet_point,idx = self.getFarthestPoint(coordinates,start,end)
+                farthet_point,idx = ut.getFarthestPoint(coordinates,start,end)
                 convex_simplices.append(farthet_point)
                 coordinates.pop(idx)
                 for j in range(len(coordinates)):
-                    if(self.checkPosition(start_point,farthet_point,coordinates[j])>0):
+                    if(ut.checkPosition(start_point,farthet_point,coordinates[j])>0):
                         left.append(coordinates[j])
-                    elif(self.checkPosition(end_point,farthet_point,coordinates[j])<0):
+                    elif(ut.checkPosition(end_point,farthet_point,coordinates[j])<0):
                         right.append(coordinates[j])
                 left = list(self.sorty(self.sort(np.array(left))))
                 right = list(self.sorty(self.sort(np.array(right))))
@@ -146,13 +147,13 @@ class MyComplexHull:
             right = []
             #cari titik terjauh
             if(len(coordinates)>1 and not(start[0]==end[0] and start[1]==end[1])):
-                farthet_point,idx = self.getFarthestPoint(coordinates,start,end)
+                farthet_point,idx = ut.getFarthestPoint(coordinates,start,end)
                 convex_simplices.append(farthet_point)
                 coordinates.pop(idx)
                 for j in range(len(coordinates)):
-                    if(self.checkPosition(start_point,farthet_point,coordinates[j])<0):
+                    if(ut.checkPosition(start_point,farthet_point,coordinates[j])<0):
                         left.append(coordinates[j])
-                    elif(self.checkPosition(end_point,farthet_point,coordinates[j])>0):
+                    elif(ut.checkPosition(end_point,farthet_point,coordinates[j])>0):
                         right.append(coordinates[j])
                 left = list(self.sorty(self.sort(np.array(left))))
                 right = list(self.sorty(self.sort(np.array(right))))
@@ -170,54 +171,6 @@ class MyComplexHull:
             return coordinates
         else:
             return []
-
-    def getFarthestPoint(self,coordinates,start,end):
-        #mendapatkan titik terjauh
-        idx = 0
-        farthest_point = coordinates[0]
-        farthest_distance = self.distanceFromLine(start,end,coordinates[0])
-        biggest_degree = self.getDegree(start,end,coordinates[0])
-        for i in range(len(coordinates)):
-            distance = self.distanceFromLine(start,end,coordinates[i])
-            degree=self.getDegree(start,end,coordinates[i])
-            if(distance>farthest_distance):
-                farthest_point = coordinates[i]
-                farthest_distance = distance
-                biggest_degree = degree
-                idx = i
-            elif(distance==farthest_distance and degree>biggest_degree):
-                farthest_point = coordinates[i]
-                farthest_distance = distance
-                biggest_degree = degree
-                idx = i
-        return (farthest_point,idx)
-
-    def distanceFromLine(self,start_point,end_point,check_point):
-        #menghitung jarak suatu titik dari garis yg dibentuk oleh start_point dan end_point
-        A = end_point[1]-start_point[1]
-        B = -(end_point[0]-start_point[0])
-        C = start_point[1]*(end_point[0]-start_point[0])-start_point[0]*(end_point[1]-start_point[1])
-        return abs(A*check_point[0]+B*check_point[1]+C)/(sqrt(A**2+B**2))
-
-    def getDegree(self,p1,p2,pmain):
-        #mendapatkan sudut p1pmainp2 menggunakan aturan cosinus
-        c = self.getDistance(p1,p2)
-        b = self.getDistance(p1,pmain)
-        a = self.getDistance(p2,pmain)
-        cosx = (a**2-b**2-c**2)/(-2*b*c)
-        return np.arccos(cosx)
-
-    def getDistance(self,p1,p2):
-        #mengembalikan jarak antara 2 titik
-        return sqrt((p1[0]-p2[0])**2+(p1[1]-p2[1])**2).real
-        
-    def checkPosition(self,p1,p2,p3):
-        #p1->titik paling kiri
-        #p2->titik paling kanan
-        #p3->titik yang ingin diuji
-        #[0]->x
-        #[1]->y
-        return p1[0]*p2[1]+p3[0]*p1[1]+p2[0]*p3[1]-p3[0]*p2[1]-p2[0]*p1[1]-p1[0]*p3[1]
 
 if __name__=='__main__':
     arrays = np.array([[5,2],[1,3],[1,2],[4,4],[3,1],[2,2],[4,1],[-1,2],[0,5],[1,1]])
