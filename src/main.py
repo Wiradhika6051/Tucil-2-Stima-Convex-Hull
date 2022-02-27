@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
     import pandas as pd
     import matplotlib.pyplot as plt
-    import myComplexHull as my
+    import myConvexHull as my
     from sklearn import datasets
     valid = False
     data = None
@@ -75,7 +75,7 @@ if __name__ == '__main__':
         for i in range(len(data.target_names)):
             bucket = df[df['Target'] == i]
             bucket = bucket.iloc[:,[sumbu_x,sumbu_y]].values
-            hull = my.MyComplexHull(bucket)
+            hull = my.MyConvexHull(bucket)
             plt.scatter(bucket[:, 0], bucket[:, 1], label=data.target_names[i],c=hull.color)
             for simplex in hull.simplices:
                 plt.plot(bucket[simplex, 0], bucket[simplex, 1], hull.color)

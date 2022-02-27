@@ -1,13 +1,13 @@
 import util as ut
 import numpy as np
-class MyComplexHull:
+class MyConvexHull:
     color_idx = 0
     colors = ['b','r','g','c','m','y','k','#7b3f00']##7b3f00->chocolate
     def __init__(self,coordinates):
         self.coordinates = coordinates
         self.simplices = self.getConvexHull(coordinates)
-        self.color = MyComplexHull.colors[(MyComplexHull.color_idx)%len(MyComplexHull.colors)]
-        MyComplexHull.color_idx += 1
+        self.color = MyConvexHull.colors[(MyConvexHull.color_idx)%len(MyConvexHull.colors)]
+        MyConvexHull.color_idx += 1
 
     def sort(self,coordinates,axis=0):#0:x,1:y
         #pake quicksort
@@ -92,6 +92,7 @@ class MyComplexHull:
         convex_kanan = self.searchConvexHullLower(right,start,end)
         for i in range(len(convex_kanan)-1,-1,-1):
             simplices.append(convex_kanan[i])
+        #simplices = simplices + convex_kanan
         simplices_map = []
         simplices = [list(simplice) for simplice in simplices]
         for i in range(len(simplices)):
@@ -118,7 +119,7 @@ class MyComplexHull:
                 for j in range(len(coordinates)):
                     if(ut.checkPosition(start_point,farthet_point,coordinates[j])>0):
                         left.append(coordinates[j])
-                    elif(ut.checkPosition(end_point,farthet_point,coordinates[j])<0):
+                    elif(ut.checkPosition(farthet_point,end_point,coordinates[j])>0):
                         right.append(coordinates[j])
                 left = list(self.sorty(self.sort(np.array(left))))
                 right = list(self.sorty(self.sort(np.array(right))))
@@ -153,7 +154,7 @@ class MyComplexHull:
                 for j in range(len(coordinates)):
                     if(ut.checkPosition(start_point,farthet_point,coordinates[j])<0):
                         left.append(coordinates[j])
-                    elif(ut.checkPosition(end_point,farthet_point,coordinates[j])>0):
+                    elif(ut.checkPosition(farthet_point,end_point,coordinates[j])<0):
                         right.append(coordinates[j])
                 left = list(self.sorty(self.sort(np.array(left))))
                 right = list(self.sorty(self.sort(np.array(right))))
@@ -171,10 +172,3 @@ class MyComplexHull:
             return coordinates
         else:
             return []
-
-if __name__=='__main__':
-    arrays = np.array([[5,2],[1,3],[1,2],[4,4],[3,1],[2,2],[4,1],[-1,2],[0,5],[1,1]])
-    hull = MyComplexHull(arrays)
-    #arrey = hull.sort(arrays)
-    #print(arrey)
-    print(hull.simplices)
